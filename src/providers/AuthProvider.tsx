@@ -13,6 +13,8 @@ interface AuthContextType {
   session: any; // Consider using a more specific type if available
   setSession: React.Dispatch<React.SetStateAction<any>>;
   refreshSession: () => Promise<void>; // Method to manually refresh the session
+  isLoading: boolean;
+  profile: any;
 }
 
 // Create the context
@@ -24,6 +26,8 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [session, setSession] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [profile, setProfile] = useState(null);
 
   // Method to fetch the session
   const fetchSession = useCallback(async () => {
@@ -51,17 +55,37 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, [fetchSession]);
 
   useEffect(() => {
-    console.log("Refreshing session");
-    refreshSession();
-  }, []);
+    if (session) {
+      // fetch profile
+      fetchProfile();
+    }
+  }, [session]);
 
-  // Expose the method to manually refresh the session
+  const fetchProfile = async () => {
+    const { data } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", session.user.id)
+      .single();
+    setProfile(data || null);
+    console.log(data, "THIS IS THE PROFILE");
+    setIsLoading(false);
+  };
+
+  // useEffect(() => {
+  //   console.log("Refreshing session");
+  //   refreshSession();
+  // }, []);
+
+  // // Expose the method to manually refresh the session
   const refreshSession = async () => {
     await fetchSession();
   };
 
   return (
-    <AuthContext.Provider value={{ session, setSession, refreshSession }}>
+    <AuthContext.Provider
+      value={{ session, setSession, refreshSession, isLoading, profile }}
+    >
       {children}
     </AuthContext.Provider>
   );

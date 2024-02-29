@@ -7,7 +7,7 @@ import { Stack } from "expo-router";
 export default function TabOneScreen() {
   return (
     <>
-      <Stack.Screen options={{ title: "Menu" }} />
+      <Stack.Screen options={{ title: "User Menu" }} />
       <FlatList
         data={products}
         renderItem={({ item }) => <ProductListItem product={item} />}
