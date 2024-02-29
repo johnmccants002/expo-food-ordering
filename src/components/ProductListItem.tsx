@@ -14,7 +14,6 @@ export const defaultPizzaImage =
 const ProductListItem = (props: ProductListItemProps) => {
   const { product } = props;
   const segments = useSegments();
-  console.log(segments, "SEGMENTS");
 
   return (
     <Link href={`${segments[0]}/orders/${product.id}`} asChild>

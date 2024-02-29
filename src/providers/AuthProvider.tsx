@@ -1,48 +1,42 @@
-// src/context/AuthContext.tsx
-
 import React, {
   createContext,
   useContext,
   useState,
   useEffect,
   ReactNode,
+  useCallback,
 } from "react";
 import { supabase } from "@/lib/supabase";
 
 // Define the shape of the context
 interface AuthContextType {
-  session: any; // You can replace `any` with a more specific type
-  setSession: React.Dispatch<React.SetStateAction<any>>; // Same here for the specific type
+  session: any; // Consider using a more specific type if available
+  setSession: React.Dispatch<React.SetStateAction<any>>;
+  refreshSession: () => Promise<void>; // Method to manually refresh the session
 }
 
 // Create the context
-const AuthContext = createContext<AuthContextType | undefined>({
-  session: null,
-  setSession: null,
-});
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 interface AuthProviderProps {
-  children: ReactNode; // This ensures `children` is correctly typed
+  children: ReactNode;
 }
 
-// AuthProvider component
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
-  console.log("IN AUTH PROVIDER");
   const [session, setSession] = useState<any>(null);
 
-  useEffect(() => {
-    // Define an async function to fetch the current session
-    const fetchSession = async () => {
-      console.log("FETCH SESSION CALLED");
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
-      console.log(session, "THIS IS THE DATA");
-      setSession(session);
-    };
+  // Method to fetch the session
+  const fetchSession = useCallback(async () => {
+    console.log("FETCHING SESSION: CALLBACK");
+    const {
+      data: { session },
+    } = await supabase.auth.getSession();
+    console.log("THIS IS THE SESSION: ", session?.user.email);
+    setSession(session);
+  }, []);
 
-    // Call the async function
-    fetchSession();
+  useEffect(() => {
+    fetchSession(); // Initial fetch
 
     // Set up the subscription
     const { data: listener } = supabase.auth.onAuthStateChange(
@@ -51,20 +45,28 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       }
     );
 
-    // Cleanup subscription on component unmount
     return () => {
       listener?.unsubscribe();
     };
+  }, [fetchSession]);
+
+  useEffect(() => {
+    console.log("Refreshing session");
+    refreshSession();
   }, []);
 
+  // Expose the method to manually refresh the session
+  const refreshSession = async () => {
+    await fetchSession();
+  };
+
   return (
-    <AuthContext.Provider value={{ session, setSession }}>
+    <AuthContext.Provider value={{ session, setSession, refreshSession }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
-// useAuth hook
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
