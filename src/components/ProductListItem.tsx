@@ -1,4 +1,4 @@
-import { Product } from "@/Food Ordering Asset bundle/types";
+import { Product } from "@constants/types";
 import React from "react";
 import { View, Image, Text, StyleSheet } from "react-native";
 import Colors from "../constants/Colors";
@@ -12,7 +12,11 @@ const ProductListItem = (props: ProductListItemProps) => {
   return (
     <View style={styles.container}>
       <Image
-        source={{ uri: product.image ? product.image : "" }}
+        source={{
+          uri: product.image
+            ? product.image
+            : "https://notjustdev-dummy.s3.us-east-2.amazonaws.com/food/default.png",
+        }}
         style={styles.image}
         resizeMode="contain"
       />
