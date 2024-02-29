@@ -28,26 +28,14 @@ export default function TabLayout() {
       }}
     >
       <Tabs.Screen
-        name="index"
+        name="menu"
         options={{
-          title: "Tab One",
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
-          headerRight: () => (
-            <Link href="/modal" asChild>
-              <Pressable>
-                {({ pressed }) => (
-                  <FontAwesome
-                    name="info-circle"
-                    size={25}
-                    color={Colors[colorScheme ?? "light"].text}
-                    style={{ marginRight: 15, opacity: pressed ? 0.5 : 1 }}
-                  />
-                )}
-              </Pressable>
-            </Link>
-          ),
+          title: "Menu",
+          tabBarIcon: ({ color }) => <TabBarIcon name="dollar" color={color} />,
+          headerShown: false,
         }}
       />
+      <Tabs.Screen name="index" options={{ href: null }} />
       <Tabs.Screen
         name="two"
         options={{
