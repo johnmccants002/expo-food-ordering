@@ -1,5 +1,5 @@
-import { FlatList, StyleSheet } from "react-native";
-
+import { StyleSheet } from "react-native";
+import { FlatList } from "react-native-gesture-handler";
 import products from "@assets/data/products";
 import ProductListItem from "@components/ProductListItem";
 import { Stack } from "expo-router";

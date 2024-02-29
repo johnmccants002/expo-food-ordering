@@ -4,13 +4,15 @@ import React, { useState } from "react";
 import Colors from "../../../constants/Colors";
 import Button from "../../../components/Button";
 import * as ImagePicker from "expo-image-picker";
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
 
 const CreateScreen = () => {
   const [image, setImage] = useState<string | null>(null);
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
   const [errors, setErrors] = useState("");
+  const { id } = useLocalSearchParams();
+  const isUpdating = !!id;
 
   const router = useRouter();
 
@@ -86,7 +88,7 @@ const CreateScreen = () => {
         keyboardType="numeric"
       />
       <Text style={styles.error}>{errors}</Text>
-      <Button onPress={onCreate} text="Create" />
+      <Button onPress={onCreate} text={isUpdating ? "Update" : "Create"} />
     </View>
   );
 };

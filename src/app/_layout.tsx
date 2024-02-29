@@ -11,6 +11,7 @@ import { useEffect } from "react";
 
 import { useColorScheme } from "@/components/useColorScheme";
 import CartProvider from "@/providers/CartProvider";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -53,15 +54,17 @@ function RootLayoutNav() {
   const colorScheme = useColorScheme();
 
   return (
-    <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
-      <CartProvider>
-        <Stack>
-          <Stack.Screen name="(user)" options={{ headerShown: false }} />
-          <Stack.Screen name="(admin)" options={{ headerShown: false }} />
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+        <CartProvider>
+          <Stack>
+            <Stack.Screen name="(user)" options={{ headerShown: false }} />
+            <Stack.Screen name="(admin)" options={{ headerShown: false }} />
 
-          <Stack.Screen name="modal" options={{ presentation: "modal" }} />
-        </Stack>
-      </CartProvider>
-    </ThemeProvider>
+            <Stack.Screen name="modal" options={{ presentation: "modal" }} />
+          </Stack>
+        </CartProvider>
+      </ThemeProvider>
+    </GestureHandlerRootView>
   );
 }
